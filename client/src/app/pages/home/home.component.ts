@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { IconComponent } from '../../components/icon/icon.component';
 import { NgFor, NgIf, CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, IconComponent, NgFor, NgIf, CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IconComponent, NgFor, NgIf],
   template: `
     <main class="home-portal">
       <div class="container main-layout">

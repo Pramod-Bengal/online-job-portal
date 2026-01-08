@@ -47,31 +47,34 @@ const jobSchema = new mongoose.Schema({
 });
 
 // Static methods
-jobSchema.statics.create = async function(jobData) {
+jobSchema.statics.create = async function (jobData) {
     const job = new this(jobData);
     await job.save();
     return job._id;
 };
 
-jobSchema.statics.findAll = async function() {
+jobSchema.statics.findAll = async function () {
     return await this.find()
         .populate('employer_id', 'name email')
         .sort({ created_at: -1 })
         .lean();
 };
 
-jobSchema.statics.findById = async function(id) {
+jobSchema.statics.findById = async function (id) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return null;
+    }
     return await this.findOne({ _id: id })
         .populate('employer_id', 'name email')
         .lean();
 };
 
-jobSchema.statics.delete = async function(id) {
+jobSchema.statics.delete = async function (id) {
     return await this.findByIdAndDelete(id);
 };
 
 // Instance method to convert to JSON with employer info
-jobSchema.methods.toJSON = function() {
+jobSchema.methods.toJSON = function () {
     const job = this.toObject();
     if (job.employer_id && typeof job.employer_id === 'object') {
         job.employer_name = job.employer_id.name;

@@ -558,7 +558,7 @@ export class JobsComponent implements OnInit {
   loading = true;
   searchQuery: string = '';
   locationQuery: string = '';
-  
+
   filters = {
     fullTime: false,
     remote: false,
@@ -603,7 +603,7 @@ export class JobsComponent implements OnInit {
           midLevel: false,
           seniorLevel: false
         };
-        
+
         if (jobType === 'remote') {
           this.filters.remote = true;
         } else if (jobType === 'full-time') {
@@ -612,7 +612,7 @@ export class JobsComponent implements OnInit {
           this.filters.internship = true;
         }
       }
-      
+
       // Handle search query from category clicks
       if (params['search']) {
         this.searchQuery = params['search'];
@@ -636,10 +636,10 @@ export class JobsComponent implements OnInit {
           if (jobs && jobs.length > 0) {
             this.allJobs = jobs;
           } else {
-            // Add sample jobs with IDs
+            // Add sample jobs with valid MongoDB-style IDs
             this.allJobs = this.sampleJobs.map((job, index) => ({
               ...job,
-              id: `sample-${index + 1}`,
+              id: `0000000000000000000000${(index + 1).toString(16).padStart(2, '0')}`,
               created_at: new Date().toISOString()
             }));
           }
@@ -648,10 +648,10 @@ export class JobsComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error loading jobs:', err);
-          // Use sample jobs on error
+          // Use sample jobs with valid MongoDB-style IDs on error
           this.allJobs = this.sampleJobs.map((job, index) => ({
             ...job,
-            id: `sample-${index + 1}`,
+            id: `0000000000000000000000${(index + 1).toString(16).padStart(2, '0')}`,
             created_at: new Date().toISOString()
           }));
           this.applyFilters();
@@ -668,10 +668,10 @@ export class JobsComponent implements OnInit {
         if (topJobs && topJobs.length > 0) {
           this.topJobs = topJobs.slice(0, 5);
         } else {
-          // Use sample jobs as top jobs
+          // Use sample jobs as top jobs with valid IDs
           this.topJobs = this.sampleJobs.slice(0, 5).map((job, index) => ({
             ...job,
-            id: `top-${index + 1}`,
+            id: `ff00000000000000000000${(index + 1).toString(16).padStart(2, '0')}`,
             isFeatured: true,
             created_at: new Date().toISOString()
           }));
@@ -679,10 +679,10 @@ export class JobsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading top jobs:', err);
-        // Use sample jobs as top jobs
+        // Use sample jobs as top jobs with valid IDs
         this.topJobs = this.sampleJobs.slice(0, 5).map((job, index) => ({
           ...job,
-          id: `top-${index + 1}`,
+          id: `ff00000000000000000000${(index + 1).toString(16).padStart(2, '0')}`,
           isFeatured: true,
           created_at: new Date().toISOString()
         }));
@@ -696,7 +696,7 @@ export class JobsComponent implements OnInit {
     // Search filter
     if (this.searchQuery.trim()) {
       const query = this.searchQuery.toLowerCase();
-      filtered = filtered.filter(job => 
+      filtered = filtered.filter(job =>
         job.title.toLowerCase().includes(query) ||
         job.company.toLowerCase().includes(query) ||
         job.description.toLowerCase().includes(query)
@@ -706,7 +706,7 @@ export class JobsComponent implements OnInit {
     // Location filter
     if (this.locationQuery.trim()) {
       const location = this.locationQuery.toLowerCase();
-      filtered = filtered.filter(job => 
+      filtered = filtered.filter(job =>
         job.location.toLowerCase().includes(location)
       );
     }
@@ -719,7 +719,7 @@ export class JobsComponent implements OnInit {
     if (this.filters.internship) jobTypeFilters.push('Internship');
 
     if (jobTypeFilters.length > 0) {
-      filtered = filtered.filter(job => 
+      filtered = filtered.filter(job =>
         jobTypeFilters.includes(job.jobType)
       );
     }
@@ -731,7 +731,7 @@ export class JobsComponent implements OnInit {
     if (this.filters.seniorLevel) experienceFilters.push('Senior Level');
 
     if (experienceFilters.length > 0) {
-      filtered = filtered.filter(job => 
+      filtered = filtered.filter(job =>
         experienceFilters.includes(job.experience)
       );
     }

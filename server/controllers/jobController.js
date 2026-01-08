@@ -56,6 +56,11 @@ exports.getJobs = async (req, res) => {
 
 exports.getJobById = async (req, res) => {
     try {
+        // Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ msg: 'Invalid job ID format' });
+        }
+
         const job = await Job.findById(req.params.id);
         if (!job) {
             return res.status(404).json({ msg: 'Job not found' });
@@ -90,7 +95,7 @@ exports.getTopJobs = async (req, res) => {
             .sort({ created_at: -1 })
             .limit(5)
             .lean();
-        
+
         // If we don't have 5 featured jobs, fill with recent jobs
         let topJobs = featuredJobs;
         if (topJobs.length < 5) {
@@ -101,7 +106,7 @@ exports.getTopJobs = async (req, res) => {
                 .lean();
             topJobs = [...topJobs, ...recentJobs];
         }
-        
+
         // Transform jobs
         const transformedJobs = topJobs.map(job => ({
             id: job._id.toString(),
@@ -117,7 +122,7 @@ exports.getTopJobs = async (req, res) => {
             employer_name: job.employer_id?.name || 'Unknown',
             employer_email: job.employer_id?.email || ''
         }));
-        
+
         res.json(transformedJobs);
     } catch (err) {
         console.error(err.message);

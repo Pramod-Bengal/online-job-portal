@@ -174,8 +174,19 @@ export class JobDetailComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.jobService.getJobById(id).subscribe(job => {
-        this.job = job;
+      this.jobService.getJobById(id).subscribe({
+        next: (job) => {
+          if (job) {
+            this.job = job;
+          } else {
+            console.error('Job not found');
+            // Optionally redirect to jobs list
+            // this.router.navigate(['/jobs']);
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching job:', err);
+        }
       });
     }
   }

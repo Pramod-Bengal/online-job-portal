@@ -27,20 +27,26 @@ const applicationSchema = new mongoose.Schema({
 });
 
 // Static methods
-applicationSchema.statics.create = async function(appData) {
+applicationSchema.statics.create = async function (appData) {
     const application = new this(appData);
     await application.save();
     return application._id;
 };
 
-applicationSchema.statics.findByJobId = async function(jobId) {
+applicationSchema.statics.findByJobId = async function (jobId) {
+    if (!mongoose.Types.ObjectId.isValid(jobId)) {
+        return [];
+    }
     return await this.find({ job_id: jobId })
         .populate('seeker_id', 'name email')
         .sort({ created_at: -1 })
         .lean();
 };
 
-applicationSchema.statics.findBySeekerId = async function(seekerId) {
+applicationSchema.statics.findBySeekerId = async function (seekerId) {
+    if (!mongoose.Types.ObjectId.isValid(seekerId)) {
+        return [];
+    }
     return await this.find({ seeker_id: seekerId })
         .populate('job_id', 'title company')
         .sort({ created_at: -1 })
@@ -48,7 +54,7 @@ applicationSchema.statics.findBySeekerId = async function(seekerId) {
 };
 
 // Instance method to convert to JSON with related info
-applicationSchema.methods.toJSON = function() {
+applicationSchema.methods.toJSON = function () {
     const app = this.toObject();
     if (app.seeker_id && typeof app.seeker_id === 'object') {
         app.seeker_name = app.seeker_id.name;
