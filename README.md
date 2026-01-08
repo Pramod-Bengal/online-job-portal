@@ -5,16 +5,16 @@ A premium, full-stack recruitment platform built with modern technologies, featu
 ## 🚀 Tech Stack
 
 ### Frontend
-- **Framework**: Angular 21
+- **Framework**: Angular 21 (Latest)
 - **Language**: TypeScript
 - **Styling**: SCSS (Modern Dark Glassmorphism Design)
+- **State Management**: RxJS & Signals
 - **Icons**: Custom SVG Component Library
-- **Typography**: Outfit & Inter (Google Fonts)
 
 ### Backend
 - **Environment**: Node.js
 - **Framework**: Express.js
-- **Database**: MySQL
+- **Database**: MongoDB (Atlas/Local)
 - **Authentication**: JWT (JSON Web Tokens) with Bcrypt password hashing
 - **Protocol**: RESTful API
 
@@ -24,11 +24,12 @@ A premium, full-stack recruitment platform built with modern technologies, featu
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18+)
-- [MySQL](https://www.mysql.com/)
+- [MongoDB](https://www.mongodb.com/)
 
 ### 1. Database Setup
-1. Create a database named `job_portal`.
-2. Update the database credentials in `server/.env`.
+1. Create a MongoDB database (Atlas or Local).
+2. Create a `.env` file in the `server` directory.
+3. Add your `MONGODB_URI`, `JWT_SECRET`, and `PORT`.
 
 ### 2. Backend Setup
 ```bash
@@ -48,6 +49,33 @@ The application will be available at `http://localhost:4200`.
 
 ---
 
+## 🌐 Deployment (Render)
+
+This project is configured for easy deployment on [Render](https://render.com/).
+
+### Backend Deployment
+1. Create a new **Web Service** on Render.
+2. Connect your GitHub repository.
+3. Set **Root Directory** to `server`.
+4. Set **Build Command** to `npm install`.
+5. Set **Start Command** to `node index.js`.
+6. Add **Environment Variables**:
+   - `MONGODB_URI`: Your MongoDB Atlas connection string.
+   - `JWT_SECRET`: A secure random string for JWT.
+
+### Frontend Deployment
+1. Create a new **Static Site** on Render.
+2. Connect your GitHub repository.
+3. Set **Root Directory** to `client`.
+4. Set **Build Command** to `npm install && npm run build`.
+5. Set **Publish Directory** to `dist/client/browser`. (Verify this after build)
+6. Add **Redirect/Rewrite** rule:
+   - Source: `/*`
+   - Destination: `/index.html`
+   - Action: `Rewrite`
+
+---
+
 ## 💎 Key Features
 
 - **Premium Dark UI**: Inspired by high-end Dribbble designs with glassmorphism and smooth animations.
@@ -64,12 +92,14 @@ The application will be available at `http://localhost:4200`.
 ├── client/                # Angular Frontend
 │   ├── src/
 │   │   ├── app/           # Components, Pages, Services
+│   │   ├── environments/  # Environment configs (Prod/Dev)
 │   │   └── styles.scss    # Global design system
 ├── server/                # Express Backend
-│   ├── config/            # DB Configuration
+│   ├── config/            # DB Configuration (MongoDB)
 │   ├── routes/            # API Endpoints
-│   └── models/            # Database Models
-└── README.md              # Main Documentation
+│   ├── models/            # Database Models (Mongoose)
+│   └── index.js           # Server Entry Point
+└── render.yaml            # Blueprint deployment config
 ```
 
 ---
