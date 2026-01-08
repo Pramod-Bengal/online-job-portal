@@ -786,14 +786,14 @@ export class HomeComponent {
 
   filterBy(cat: string) {
     // Navigate to jobs page with search query
-    this.router.navigate(['/jobs'], { 
-      queryParams: { search: cat } 
+    this.router.navigate(['/jobs'], {
+      queryParams: { search: cat }
     });
   }
 
   showMore() {
     // Show maximum 5 jobs
-    this.displayedJobs = this.allJobs.filter(j => 
+    this.displayedJobs = this.allJobs.filter(j =>
       !this.activeFilter || j.category === this.activeFilter
     ).slice(0, 5);
     this.isExpanded = true;
@@ -801,7 +801,7 @@ export class HomeComponent {
 
   showLess() {
     // Show only 3 jobs initially
-    this.displayedJobs = this.allJobs.filter(j => 
+    this.displayedJobs = this.allJobs.filter(j =>
       !this.activeFilter || j.category === this.activeFilter
     ).slice(0, 3);
     this.isExpanded = false;
@@ -838,8 +838,8 @@ export class HomeComponent {
 
   navigateToJobs(jobType: string) {
     // Navigate to jobs page with filter applied
-    this.router.navigate(['/jobs'], { 
-      queryParams: { jobType: jobType.toLowerCase() } 
+    this.router.navigate(['/jobs'], {
+      queryParams: { jobType: jobType.toLowerCase() }
     });
   }
 }
