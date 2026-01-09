@@ -13,26 +13,28 @@ import { FormsModule } from '@angular/forms';
     <div class="jobs-container">
       <div class="container">
         <header class="page-header animate-fade-up">
-          <h1>Explore Opportunities</h1>
-          <p>Discover your next career milestone with our curated job listings.</p>
+          <h1>Find Your Dream Job</h1>
+          <p>Explore thousands of job opportunities with top companies.</p>
           
-          <div class="search-bar glass-card">
-            <div class="search-input">
-              <app-icon name="search" [size]="20" class="text-muted"></app-icon>
-              <input type="text" placeholder="Job title, keywords, or company..." 
-                     [(ngModel)]="searchQuery" 
-                     (keyup.enter)="onSearch()"
-                     (input)="onSearch()">
+          <div class="search-bar-wrapper">
+            <div class="search-bar glass-card">
+              <div class="search-input-group">
+                <app-icon name="search" [size]="20" class="search-icon"></app-icon>
+                <input type="text" placeholder="Job title, keywords, or company" 
+                       [(ngModel)]="searchQuery" 
+                       (keyup.enter)="onSearch()"
+                       (input)="onSearch()">
+              </div>
+              <div class="divider"></div>
+              <div class="search-input-group">
+                <app-icon name="map-pin" [size]="20" class="search-icon"></app-icon>
+                <input type="text" placeholder="City, state, or zip code" 
+                       [(ngModel)]="locationQuery"
+                       (keyup.enter)="onSearch()"
+                       (input)="onSearch()">
+              </div>
+              <button class="btn btn-primary search-btn" (click)="onSearch()">Search</button>
             </div>
-            <div class="divider"></div>
-            <div class="search-input">
-              <app-icon name="map-pin" [size]="20" class="text-muted"></app-icon>
-              <input type="text" placeholder="Location..." 
-                     [(ngModel)]="locationQuery"
-                     (keyup.enter)="onSearch()"
-                     (input)="onSearch()">
-            </div>
-            <button class="btn btn-primary" (click)="onSearch()">Find Jobs</button>
           </div>
         </header>
         
@@ -136,11 +138,44 @@ import { FormsModule } from '@angular/forms';
                     </div>
                     <span>Applied</span>
                   </div>
-                  <a [routerLink]="['/jobs', job.id]" class="btn btn-outline btn-sm">View Details</a>
+                  <button (click)="openApplyModal(job)" class="btn btn-primary btn-sm">Apply Now</button>
                 </div>
               </div>
             </div>
           </main>
+        </div>
+      </div>
+
+      <!-- Application Modal -->
+      <div class="modal-backdrop" *ngIf="showApplyModal" (click)="closeApplyModal()"></div>
+      <div class="modal-content glass-card animate-fade-up" *ngIf="showApplyModal">
+        <div class="modal-header">
+          <h2>Apply for {{ selectedJob?.title }}</h2>
+          <button class="btn-icon" (click)="closeApplyModal()">
+             <app-icon name="x" [size]="24"></app-icon>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="company-name">at {{ selectedJob?.company }}</p>
+          
+          <div class="form-group">
+            <label>Upload Resume</label>
+            <div class="file-upload-area" (click)="fileInput.click()" [class.has-file]="resumeFile">
+              <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept=".pdf,.doc,.docx">
+              <app-icon name="upload-cloud" [size]="32" class="text-primary"></app-icon>
+              <p *ngIf="!resumeFile">Click to upload your resume (PDF/DOC)</p>
+              <p *ngIf="resumeFile" class="file-name">{{ resumeFile.name }}</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Cover Letter (Optional)</label>
+            <textarea rows="4" placeholder="Why are you a good fit for this role?"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" (click)="closeApplyModal()">Cancel</button>
+          <button class="btn btn-primary" (click)="submitApplication()" [disabled]="!resumeFile">Submit Application</button>
         </div>
       </div>
     </div>
@@ -160,36 +195,186 @@ import { FormsModule } from '@angular/forms';
       p { color: var(--text-muted); font-size: 1.2rem; }
     }
 
-    .search-bar {
+    .search-bar-wrapper {
       margin: 3rem auto 0;
       max-width: 900px;
-      padding: 1rem;
+      padding: 0 1rem;
+    }
+
+    .search-bar {
+      padding: 0.75rem;
       display: flex;
       align-items: center;
-      gap: 1.5rem;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
+      gap: 1rem;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .search-input-group {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0 1rem;
+      height: 50px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+
+      &:focus-within {
+        background: rgba(0,0,0,0.3);
+        border-color: rgba(255,255,255,0.1);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+      }
       
-      .search-input {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0 0.5rem;
-        
-        input {
-          border: none;
-          background: transparent;
-          width: 100%;
-          font-size: 1rem;
-          color: var(--text-main);
-          outline: none;
-          
-          &::placeholder { color: var(--text-muted); }
-        }
+      .search-icon {
+        opacity: 0.5;
+        transition: opacity 0.3s;
       }
 
-      .divider { width: 1px; height: 30px; background: var(--border-color); }
+      input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        font-size: 1rem;
+        color: var(--text-main);
+        outline: none;
+        width: 100%;
+        
+        &::placeholder { color: var(--text-muted); opacity: 0.7; }
+        
+        &:focus + .search-icon, &:focus ~ .search-icon {
+           opacity: 1;
+           color: var(--primary-color);
+        }
+      }
+    }
+
+    .divider { 
+      width: 1px; 
+      height: 40px; 
+      background: rgba(255,255,255,0.1);
+      margin: 0 0.5rem;
+    }
+
+    .search-btn {
+      padding: 0 2.5rem;
+      height: 50px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.5);
+      }
+    }
+
+    /* Modal Styles */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 500px;
+      padding: 2rem;
+      z-index: 101;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1.5rem;
+      
+      h2 { font-size: 1.5rem; margin: 0; }
+    }
+
+    .company-name {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-main);
+        font-weight: 500;
+      }
+      
+      textarea {
+        width: 100%;
+        padding: 1rem;
+        background: rgba(0,0,0,0.2);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        color: var(--text-main);
+        resize: vertical;
+        outline: none;
+        
+        &:focus { border-color: var(--primary-color); }
+      }
+    }
+
+    .file-upload-area {
+      border: 2px dashed rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      
+      &:hover {
+        border-color: var(--primary-color);
+        background: rgba(255,255,255,0.02);
+      }
+      
+      &.has-file {
+        border-style: solid;
+        border-color: var(--primary-color);
+        background: rgba(99, 102, 241, 0.1);
+      }
+      
+      p { margin-top: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
+      .file-name { color: var(--primary-color); font-weight: 600; }
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .jobs-layout {
@@ -753,6 +938,55 @@ export class JobsComponent implements OnInit {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       element.classList.add('highlight-job');
       setTimeout(() => element.classList.remove('highlight-job'), 2000);
+    }
+  }
+
+  /* Application Modal Logic */
+  showApplyModal = false;
+  selectedJob: any = null;
+  resumeFile: File | null = null;
+
+  openApplyModal(job: any) {
+    this.selectedJob = job;
+    this.showApplyModal = true;
+    this.resumeFile = null;
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+  }
+
+  closeApplyModal() {
+    this.showApplyModal = false;
+    this.selectedJob = null;
+    this.resumeFile = null;
+    document.body.style.overflow = 'auto'; // Restore scrolling
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        alert('File is too large. Max 5MB allowed.');
+        return;
+      }
+      this.resumeFile = file;
+    }
+  }
+
+  submitApplication() {
+    if (!this.resumeFile) return;
+
+    // Simulate API call
+    const btn = document.querySelector('.modal-footer .btn-primary') as HTMLButtonElement;
+    if (btn) {
+      const originalText = btn.innerText;
+      btn.innerText = 'Submitting...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        alert(`Application submitted successfully for ${this.selectedJob.title}!`);
+        this.closeApplyModal();
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }, 1500);
     }
   }
 }

@@ -18,7 +18,7 @@ services:
   # Frontend Static Site
   - type: web
     name: job-portal-frontend
-    runtime: static
+    env: static
     rootDir: client
     buildCommand: npm install && npm run build
     staticPublishPath: dist/client/browser # Default Angular build path for Angular 17+

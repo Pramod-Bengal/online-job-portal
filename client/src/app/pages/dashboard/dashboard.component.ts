@@ -15,10 +15,13 @@ import { IconComponent } from '../../components/icon/icon.component';
              <h1>Welcome back, <span class="text-primary">{{ user.name }}</span>!</h1>
              <p>Here's what's happening with your job search today.</p>
            </div>
-           <button class="btn btn-primary">
-             <app-icon name="plus" [size]="18"></app-icon>
-             Update Resume
-           </button>
+           <div class="header-actions">
+             <input type="file" #resumeInput hidden (change)="onResumeUpload($event)" accept=".pdf,.doc,.docx">
+             <button class="btn btn-primary" (click)="resumeInput.click()">
+               <app-icon name="upload" [size]="18"></app-icon>
+               Upload Resume
+             </button>
+           </div>
         </header>
 
         <div class="stats-grid">
@@ -122,10 +125,48 @@ import { IconComponent } from '../../components/icon/icon.component';
       justify-content: space-between;
       align-items: center;
       margin-bottom: 3rem;
+      flex-wrap: wrap;
+      gap: 1.5rem;
       
       h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
       p { color: var(--text-muted); }
     }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .analysis-alert {
+      display: flex;
+      gap: 1rem;
+      padding: 1.5rem;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 12px;
+      margin-bottom: 3rem;
+      align-items: flex-start;
+      
+      .alert-icon { font-size: 1.5rem; }
+      .alert-content { 
+        flex: 1;
+        h3 { font-size: 1.1rem; margin-bottom: 0.25rem; color: var(--primary-color); }
+        p { margin: 0; color: var(--text-main); font-size: 0.95rem; }
+      }
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      display: inline-block;
+      animation: spin 1s linear infinite;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .stats-grid {
       display: grid;
@@ -262,9 +303,31 @@ import { IconComponent } from '../../components/icon/icon.component';
 
     @media (max-width: 992px) {
       .dashboard-grid { grid-template-columns: 1fr; }
+      .dashboard-header { flex-direction: column; align-items: flex-start; }
+      .header-actions { width: 100%; justify-content: flex-start; }
     }
   `]
 })
 export class DashboardComponent {
   authService = inject(AuthService);
+  isAnalyzing = false;
+  analysisResult: string | null = null;
+
+  onResumeUpload(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      alert(`Resume "${file.name}" uploaded successfully!`);
+    }
+  }
+
+  analyzeProfile() {
+    this.isAnalyzing = true;
+    this.analysisResult = null;
+
+    // Simulate complex analysis
+    setTimeout(() => {
+      this.isAnalyzing = false;
+      this.analysisResult = "Based on your recent activity and resume, your profile is 85% optimized! You're a strong candidate for Senior Frontend roles. We recommend adding more details about your Angular projects to increase visibility.";
+    }, 2000);
+  }
 }
