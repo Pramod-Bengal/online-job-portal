@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { JobService } from '../../services/job.service';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DatePipe, NgFor, NgIf, SlicePipe } from '@angular/common';
 import { IconComponent } from '../../components/icon/icon.component';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-jobs',
   standalone: true,
-  imports: [RouterLink, NgFor, NgIf, DatePipe, SlicePipe, IconComponent, FormsModule],
+  imports: [NgFor, NgIf, DatePipe, SlicePipe, IconComponent, FormsModule],
   template: `
     <div class="jobs-container">
       <div class="container">
